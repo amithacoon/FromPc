@@ -1,0 +1,34 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Home</title>
+    <style>
+        /* Add some styling to make the page look better */
+        body {
+            background-color: #fcf1df;
+            color: #2d2a71; /* Change text color */
+            font-family: Arial, sans-serif;
+        }
+        p {
+            font-size: 16px;
+            line-height: 1.5;
+            margin: 10px 0;
+            text-align: center;
+        }
+        img {
+            display: block;
+            margin: 0 auto;
+            max-width: 50%; /* Make the image 50% smaller */
+        }
+    </style>
+</head>
+<body>
+    <!-- Logo -->
+    <img src="{% static 'logo.png' %}" alt="Logo">
+
+    <!-- Paragraph -->
+    <p>Welcome to our website! We offer a convenient way to generate alert letters for various purposes. Whether you need a legal notice or a warning letter, we have got you covered. Our team of professionals will help you create a high-quality document that meets your needs and requirements. So why wait? Start generating your alert letters now!</p>
+</body>
+</html>
