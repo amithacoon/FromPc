@@ -128,8 +128,8 @@ def letter(request):
             dev = "טלפון"
 
         if request.POST['unsubscribed_button'] == 'false':
-            could_you_unsubscribe = "אם לא די בכך, הרי שהמסרון ממילא לא עומד בדרישות החוק הצורניות בכך שאין בו אפשרות הסרה כדין."
-        else:
+            could_you_unsubscribe = "אם לא די בכך, הרי שהמסרון ממילא לא עומד בדרישות החוק הצורניות בכך שאין בו אפשרות הסרה כדין"
+        # else:
             could_you_unsubscribe = " "
 
             # Get the number of messages
@@ -148,7 +148,7 @@ def letter(request):
         for date, time in dates_and_times[:1:1]:
             messages += f"ביום {date}  בשעה {time}\n"
         for date, time in dates_and_times[1::1]:
-            messages += f"ביום {date}  בשעה {time}             \n"
+            messages += f"ביום {date}  בשעה {time}\n"
 
         print(dates_and_times)  # Output:
 
