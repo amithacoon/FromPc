@@ -19,6 +19,7 @@
   $(document).ready(function() {
     $('#num_messages').change(function() {
       updateMessageDates();
+      updateMessagePhotos();
     });
   });
 </script>
@@ -36,13 +37,66 @@
           '<label for="message_' + i + '_date" style="font-weight: bold;">Date and time of message ' + (i+1) + ':</label>' +
           '<input type="date" name="message_' + i + '_date" id="message_' + i + '_date" style="width: 100%; margin-bottom: 10px; padding: 12px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;" required>' +
           '<input type="time" name="message_'+i+'_time" id="message_'+i+'_time" min="00:00" max="23:59" required style="width: 100%; margin-bottom: 10px; padding: 12px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;" required>' +
-        '</div>'
+        '</div>',
+
+
       );
     }
   }
 </script>
 
+<script>
+let num_messages;
+function updateMessagePhotos() {
+    // Get the number of messages
+ var numMessages = $('#num_messages').val();
+    // Clear the existing message date fields
+    $('#upload').empty();
 
+    // Add the necessary number of message date fields
+    for (var i = 0; i < numMessages; i++) {
+        $('#upload').append(
+            '<div>' +
+            '<label for="message_' + i + '_photo" ">Photo number ' + (i + 1) + ':</label>'
+            + '<input type="file" name="photo_' + i + ' " id="photo_' + i + '" >'
+            + '<button type="button" id="upload-button_' + i + '"  name="photo_' + i + '_upload" style="width: 23%; margin-bottom: 10px; padding: 12px; background-color: #4caf50; color: white; font-weight: bold; border: none; border-radius: 4px; cursor: pointer;">'
+            + '</div>'
+        );
+
+        // Attach event listeners to the new "upload" button
+        document.getElementById("upload-button_" + i).addEventListener("click", function (e) {
+            // open file selection dialog
+            this.previousSibling.previousSibling.click();
+        });
+        document.getElementById("photo_" + i).addEventListener("change", function (e) {
+            e.preventDefault()
+let file = e.target.files[0];
+let formData = new FormData();
+formData.append('file', file);
+formData.append('numMessages', numMessages);
+formData.append('csrfmiddlewaretoken', document.getElementsByName('csrfmiddlewaretoken')[0].value);
+fetch('/upload/', {
+                method: 'POST',
+                body: formData
+})
+.then(response => response.json())
+.then(data => {
+    if(data.status === 'success'){
+        if(data.message === "All files uploaded successfully"){
+            alert(data.message)
+        } else {
+            alert(data.message)
+        }
+    } else if(data.status === 'error'){
+        alert(data.message)
+    }
+})
+.catch(error => console.error('Error:', error));
+        });
+    }
+}
+
+</script>
 
 
 
@@ -74,11 +128,9 @@
         <div style="margin-bottom: 10px;">
           <label for="message_{{ i }}_date" style="font-weight: bold;">Date and time of message {{ i }}:</label>
             <input type="datetime-local" name="message_{{ i }}_date" id="message_{{ i }}_date" style="width: 100%; margin-bottom: 10px; padding: 12px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;" required>
-{#            <input type="datetime-local" name="message_{{ i }}_time" id="message_{{ i }}_time" style="width: 100%; margin-bottom: 10px; padding: 12px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;" required>#}
-
         </div>
       {% endfor %}
-</div>
+    </div>
 <!-- Unsubscribed button -->
 <label for="unsubscribed_button" style="font-weight: bold;">Did you have the option to remove yourself from the mailing list with an "unsubscribe" button?</label>
 <div>
@@ -99,103 +151,23 @@
 
     {% csrf_token %}
 
-<input type="file" id="file-input" style="display:none">
-<button id="upload-button" type="button">Upload</button>
+      <div id="upload" style="margin-bottom: 10px;">
+      {% for i in range %}
+
+        <div style="margin-bottom: 10px;">
+            <label for="message_{{ i }}_photo" style="font-weight: bold;">Photo message {{ i }}:</label>
+             <input type="file" name="photo_{{ i }}" id="photo_{{ i }}" style="width: 100%; margin-bottom: 10px; padding: 12px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;" required>
+            <button id="upload-button_{{ i }}" type="button" >Upload_{{ i }}</button>
+        </div>
+      {% endfor %}
+    </div>
 
 
 
-{#<button id="choose-file-button" type="button">Choose file</button>#}
-{#<button id="upload-button" type="button" disabled>Upload</button>#}
-{#<input type="file" id="file-input" style="display:none">#}
-{##}
-{##}
 
        <button type="submit" style="width: 100%; margin-bottom: 10px; padding: 12px; background-color: #4caf50; color: white; font-weight: bold; border: none; border-radius: 4px; cursor: pointer;">Submit</button>
 
   </form>
-
-
-<script>
-
-
-{#document.getElementById("choose-file-button").addEventListener("click", function (e) {#}
-{#  e.preventDefault()#}
-{#    document.getElementById("file-input").click();}#}
-{#);#}
-{##}
-{#document.getElementById("file-input").addEventListener("change", function(e) {#}
-  {#var file = e.target.files[0];#}
-{#  document.getElementById("upload-button").innerHTML = "Upload " + file.name;#}
-{#  document.getElementById("upload-button").disabled = false;}#}
-{#);#}
-{##}
-{#document.getElementById("upload-button").addEventListener("click", function(e) {#}
-{#  e.preventDefault()#}
-
-
-document.getElementById("upload-button").addEventListener("click", function (e) {
-  // open file selection dialog
-  document.getElementById("file-input").click();}
-);
-
-document.getElementById("file-input").addEventListener("change", function(e) {
-  e.preventDefault()
-
-  // Get the selected file
-  let file = e.target.files[0];
-  // create FormData object to store file data
-let formData = new FormData();
-formData.append('file', file);
-formData.append('csrfmiddlewaretoken', document.getElementsByName('csrfmiddlewaretoken')[0].value);
-  // append file to the FormData object
-  // send file to the server
-  fetch('/upload/', {
-    method: 'POST',
-    body: formData
-  })
-  .then(response => response.json())
-  .then(data => {
-    if(data.status === 'success'){
-      // show success message
-      alert("upload success")
-    }else{
-      // show error message
-      alert("upload failed")
-    }
-  });
-});
-
-
-</script>
-      {#</form>#}
-{##}
-{#<form method="POST" action="{% url 'upload_photo' %}" enctype="multipart/form-data">#}
-{# {% csrf_token %}#}
-{#<label for="photo" style="font-weight: bold;" >Select a photo: </label>#}
-{#     <input type="file" id="photo" name="photo">#}
-{#    <button id="upload_button" type="submit" style="width: 100%; margin-bottom: 10px; padding: 12px; background-color: #4caf50; color: white; font-weight: bold; border: none; border-radius: 4px; cursor: pointer;">Upload</button>#}
-{#</form>#}
-
-{#{% if messages %}#}
-{#<ul class="messages">#}
-{#    {% for message in messages %}#}
-{#    <li  {% if message.tags %} class=" {{ message.tags }} " {% endif %}> {{ message }} </li>#}
-{#    {% endfor %}#}
-{#</ul>#}
-{#{% endif %}#}
-
-{# <script>#}
-{#    document.getElementById("upload_button").addEventListener("click", function(event){#}
-{#        event.preventDefault();#}
-{#        console.log("event listener function executed");#}
-{#        var file = document.getElementById("photo").files[0];#}
-{#        var formData = new FormData();#}
-{#        formData.append("photo", file);#}
-{#        var xhr = new XMLHttpRequest();#}
-{#        xhr.open("POST", "{% url 'upload_photo' %}", true);#}
-{#        xhr.send(formData);#}
-{#    });#}
-{#</script>#}
 
 
 

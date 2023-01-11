@@ -67,45 +67,41 @@ def letter(request):
 #     document.save('static/docx/modified_document1.docx')
 #
 
+# def file_upload(request):
+#     if request.method == 'POST':
+#         file = request.FILES.get('file')
+#         print(f'Uploaded file: {file.name}')  # Print the name of the uploaded file
+#         file_name = "temp.png"
+#         file_path = os.path.join(settings.MEDIA_ROOT, file_name)
+#         print(f'File path: {file_path}')  # Print the file path
+#         with open(file_path, 'wb+') as destination:
+#             for chunk in file.chunks():
+#                 destination.write(chunk)
+#         print("File saved successfully!")  # Print success message
+#         return JsonResponse({'status': 'success'})
+current_upload = 0
+
+
 def file_upload(request):
+    global current_upload
     if request.method == 'POST':
+        numMessages = int(request.POST.get('numMessages'))
         file = request.FILES.get('file')
-        print(f'Uploaded file: {file.name}')  # Print the name of the uploaded file
-        file_name = "temp.png"
-        file_path = os.path.join(settings.MEDIA_ROOT, file_name)
-        print(f'File path: {file_path}')  # Print the file path
-        with open(file_path, 'wb+') as destination:
-            for chunk in file.chunks():
-                destination.write(chunk)
-        print("File saved successfully!")  # Print success message
-        return JsonResponse({'status': 'success'})
+        if file:  # check if file exists
+            file_name = f'temp{current_upload}.png'
+            file_path = os.path.join(settings.MEDIA_ROOT, file_name)
+            with open(file_path, 'wb+') as destination:
+                for chunk in file.chunks():
+                    destination.write(chunk)
+            current_upload += 1
+            if current_upload == numMessages:
+                current_upload = 0
+                return JsonResponse({'status': 'success', 'message': 'All files uploaded successfully'})
+            else:
+                return JsonResponse({'status': 'success', 'message': 'File uploaded successfully'})
+        else:
+            return JsonResponse({'status': 'error', 'message': 'File not found'})
 
-
-# def replace_pic_with_image(file_path):
-#     document = Document(file_path)
-#     print(f'file_path: {file_path}')
-#     photo_path = settings.MEDIA_ROOT + '/temp.png'
-#
-#     for p in document.paragraphs:
-#         if 'pic' in p.text:
-#             # Get the index of the 'pic' word
-#             index = p.text.index('pic')
-#             # Get the run containing the 'pic' word
-#             p.add_run(index).add_picture(photo_path)
-#             # run = p.runs[index]
-#             # # Insert the image before the 'pic' word
-#             # run.add_picture(photo_path, width=Inches(1.25), height=Inches(1.25))
-#             # run.
-#             # Remove the 'pic' word from the run
-#             # run.text = run.text.replace('pic', '')
-#             print(p.xml)
-#     document.save(file_path)
-def substitute_image_placeholder(paragraph, image_filename):
-    # --- start with removing the placeholder text ---
-    paragraph.text = paragraph.text.replace(image_filename, "")
-    # --- then append a run containing the image ---
-    run = paragraph.add_run()
-    run.add_picture(f'{image_filename}', width=(1))
 
 def letter(request):
     if request.method == 'POST':
@@ -129,7 +125,7 @@ def letter(request):
 
         if request.POST['unsubscribed_button'] == 'false':
             could_you_unsubscribe = "אם לא די בכך, הרי שהמסרון ממילא לא עומד בדרישות החוק הצורניות בכך שאין בו אפשרות הסרה כדין"
-        # else:
+            # else:
             could_you_unsubscribe = " "
 
             # Get the number of messages
@@ -174,6 +170,7 @@ def letter(request):
 
         # Open the temp file
         document = docx.Document(template_filename)
+        document.core_properties.encoding = 'UTF-8'
 
         # Replace keywords in the contents
         for paragraph in document.paragraphs:
@@ -181,22 +178,39 @@ def letter(request):
                 for key, value in keywords.items():
                     run.text = run.text.replace(key, value)
 
+        # document.add_picture(photo_path, width=Inches(3))
+        photo_path = [''] * num_messages
+        # Iterate through all the paragraphs in the docx
+        hebrew_alphabet = ["א", "ב", "ג", "ד", "ה", "ו", "ז", "ח", "ט", "י", "כ", "ל", "מ", "נ", "ס", "ע", "פ", "צ",
+                           "ק", "ר", "ש", "ת"]
+
+        nep = ""
+        for i in range(num_messages):
+            input = ("נספח " + hebrew_alphabet[i] + "׳:"
+                                                    "\n")
+            new_para = document.add_paragraph(input)
+            photo_path[i] = settings.MEDIA_ROOT + ('/temp' + f'{i}' + '.png')
+            new_para.add_run().add_picture(photo_path[i], width=Inches(2.5))
+
+
+
+        # for para in document.paragraphs:
+        #     if "pic" in para.text:
+        #         para.text = para.text.replace('pic', nep)
+
+        # for i in range(num_messages):
+        #     for para in document.paragraphs:
+        #         if ('pic '+f'{i}') in para.text:
+        #             input = ("נספח " + hebrew_alphabet[i] + ":׳\n")
+        #             photo_path[i] = settings.MEDIA_ROOT + ('/temp' + f'{i}' + '.png')
+        #             para.text = para.text.replace('pic '+f'{i}', input)
+        #             para.add_run().add_picture(photo_path[i], width=Inches(2.5))
+
         for paragraph in document.paragraphs:
             # Iterate over the runs in the paragraph
             for run in paragraph.runs:
                 # Set the font to Arial
                 run.font.name = "Arial"
-        photo_path = settings.MEDIA_ROOT + '/temp.png'
-        # document.add_picture(photo_path, width=Inches(3))
-
-        # Iterate through all the paragraphs in the docx
-        for para in document.paragraphs:
-            # Replace the word "pic" with the image
-            if "pic" in para.text:
-                para.text = para.text.replace("pic", "")
-                para.add_run().add_picture(photo_path, width=Inches(3))
-
-
         document.save('static/docx/modified_document.docx')
         filepath = 'static/docx/modified_document.docx'
         print(f'file_path: {filepath}')
