@@ -1,12 +1,18 @@
 import os
 from io import BytesIO
-
+from django.http import HttpResponse
+from django.core.files.storage import default_storage
+from django.core.files.base import ContentFile
 from django.contrib import messages
+from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponseRedirect
-
+import os
+from django.conf import settings
+from django.http import JsonResponse
 import datetime
 import docx
 from django.shortcuts import render, redirect
+from docx.shared import Inches
 
 from PIL import Image
 from docx import Document
@@ -24,41 +30,82 @@ def letter(request):
     return render(request, 'letter.html')
 
 
-def upload_photo(request):
+#
+# def upload_photo(request):
+#     if request.method == 'POST':
+#         photo = request.FILES.get('photo')
+#         if photo:
+#             # check that it's a valid image file
+#             if not photo.content_type.startswith('image'):
+#                 messages.success(request, 'Thats Not a Photo!')
+#             else:
+#                 # store the file in your static folder
+#                 with open('media/upload_folder/' + 'tempphoto.png', 'wb+') as destination:
+#                     for chunk in photo.chunks():
+#                         destination.write(chunk)
+#                 messages.success(request, 'File uploaded !')
+#
+#         else:
+#             messages.success(request, 'No file was selected')
+#     return render(request, 'letter.html')
+
+
+# def replace_pic(filepath, photo):
+#     document = Document(filepath)
+#     for paragraph in document.paragraphs:
+#         if 'pic' in paragraph.text:
+#             # insert the photo
+#             # Save the PIL Image object to a BytesIO object
+#             with Image.open(photo) as img:
+#                 buffer = BytesIO(photo)
+#                 img.save(buffer, 'PNG')
+#             # Add the image to the document
+#             document.add_picture(buffer, width=photo.width, height=photo.height)
+#             buffer.seek(0)
+#             # Replace 'pic' with image
+#             paragraph.text = paragraph.text.replace('pic', '')
+#     document.save('static/docx/modified_document1.docx')
+#
+
+def file_upload(request):
     if request.method == 'POST':
-        photo = request.FILES.get('photo')
-        if photo:
-            # check that it's a valid image file
-            if not photo.content_type.startswith('image'):
-                messages.success(request, 'Thats Not a Photo!')
-            else:
-                # store the file in your static folder
-                with open('media/upload_folder/' + 'tempphoto.png', 'wb+') as destination:
-                    for chunk in photo.chunks():
-                        destination.write(chunk)
-                messages.success(request, 'File uploaded !')
-
-        else:
-            messages.success(request, 'No file was selected')
-    return render(request, 'letter.html')
+        file = request.FILES.get('file')
+        print(f'Uploaded file: {file.name}')  # Print the name of the uploaded file
+        file_name = "temp.png"
+        file_path = os.path.join(settings.MEDIA_ROOT, file_name)
+        print(f'File path: {file_path}')  # Print the file path
+        with open(file_path, 'wb+') as destination:
+            for chunk in file.chunks():
+                destination.write(chunk)
+        print("File saved successfully!")  # Print success message
+        return JsonResponse({'status': 'success'})
 
 
-def replace_pic(filepath, photo):
-    document = Document(filepath)
-    for paragraph in document.paragraphs:
-        if 'pic' in paragraph.text:
-            # insert the photo
-            # Save the PIL Image object to a BytesIO object
-            with Image.open(photo) as img:
-                buffer = BytesIO(photo)
-                img.save(buffer, 'PNG')
-            # Add the image to the document
-            document.add_picture(buffer, width=photo.width, height=photo.height)
-            buffer.seek(0)
-            # Replace 'pic' with image
-            paragraph.text = paragraph.text.replace('pic', '')
-    document.save('static/docx/modified_document1.docx')
-
+# def replace_pic_with_image(file_path):
+#     document = Document(file_path)
+#     print(f'file_path: {file_path}')
+#     photo_path = settings.MEDIA_ROOT + '/temp.png'
+#
+#     for p in document.paragraphs:
+#         if 'pic' in p.text:
+#             # Get the index of the 'pic' word
+#             index = p.text.index('pic')
+#             # Get the run containing the 'pic' word
+#             p.add_run(index).add_picture(photo_path)
+#             # run = p.runs[index]
+#             # # Insert the image before the 'pic' word
+#             # run.add_picture(photo_path, width=Inches(1.25), height=Inches(1.25))
+#             # run.
+#             # Remove the 'pic' word from the run
+#             # run.text = run.text.replace('pic', '')
+#             print(p.xml)
+#     document.save(file_path)
+def substitute_image_placeholder(paragraph, image_filename):
+    # --- start with removing the placeholder text ---
+    paragraph.text = paragraph.text.replace(image_filename, "")
+    # --- then append a run containing the image ---
+    run = paragraph.add_run()
+    run.add_picture(f'{image_filename}', width=(1))
 
 def letter(request):
     if request.method == 'POST':
@@ -139,18 +186,36 @@ def letter(request):
             for run in paragraph.runs:
                 # Set the font to Arial
                 run.font.name = "Arial"
+        photo_path = settings.MEDIA_ROOT + '/temp.png'
+        # document.add_picture(photo_path, width=Inches(3))
+
+        # Iterate through all the paragraphs in the docx
+        for para in document.paragraphs:
+            # Replace the word "pic" with the image
+            if "pic" in para.text:
+                para.text = para.text.replace("pic", "")
+                para.add_run().add_picture(photo_path, width=Inches(3))
+
+
         document.save('static/docx/modified_document.docx')
         filepath = 'static/docx/modified_document.docx'
-        photo = os.path.join(settings.MEDIA_ROOT, 'upload_folder', 'tempphoto.png')
-        img = Image.open(photo)
+        print(f'file_path: {filepath}')
 
-        replace_pic(filepath, photo)
+        # replace_pic_with_image(filepath)
 
-
+        # document.save('static/docx/modified_document.docx')
+        # filepath = 'static/docx/modified_document.docx'
+        # photo = os.path.join(settings.MEDIA_ROOT, 'upload_folder', 'tempphoto.png')
+        # img = Image.open(photo)
+        #
+        # replace_pic(filepath, photo)
 
         download_success = True
+
         # document.save('static/docx/modified_document.docx')
+
         return render(request, 'form.html', {'download_success': download_success})
+
         print("Finished replacing keywords in temp file.")
     else:
         # Set the download_success flag to False
@@ -170,9 +235,6 @@ def form(request):
 
     # Render the form template
     return render(request, 'form.html', {'download_success': download_success})
-
-
-from django.http import HttpResponse
 
 
 def download_file(request):

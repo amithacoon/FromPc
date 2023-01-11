@@ -10,8 +10,7 @@ urlpatterns = [
     path('home/', views.home, name='home'),
     path('download_file/', views.download_file, name='download_file'),
     path('form/', views.form, name='form'),
-    path('upload_photo/', views.upload_photo, name='upload_photo'),
-    path('replace/', views.replace_pic, name='replace_pic'),
+    path('upload/', views.file_upload, name='file_upload'),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 if settings.DEBUG:
