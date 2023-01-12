@@ -13,6 +13,7 @@ import datetime
 import docx
 from django.shortcuts import render, redirect
 from docx.shared import Inches
+from docx2pdf import convert
 
 from PIL import Image
 from docx import Document
@@ -164,65 +165,46 @@ def letter(request):
 
         }
 
-        # Filename of the template
-        document = docx.Document()
+# Filename of the template
         template_filename = 'static/docx/template.docx'
 
-        # Open the temp file
+# Open the temp file
         document = docx.Document(template_filename)
         document.core_properties.encoding = 'UTF-8'
 
-        # Replace keywords in the contents
+# Replace keywords in the contents
         for paragraph in document.paragraphs:
             for run in paragraph.runs:
                 for key, value in keywords.items():
                     run.text = run.text.replace(key, value)
 
-        # document.add_picture(photo_path, width=Inches(3))
-        photo_path = [''] * num_messages
-        # Iterate through all the paragraphs in the docx
-        hebrew_alphabet = ["א", "ב", "ג", "ד", "ה", "ו", "ז", "ח", "ט", "י", "כ", "ל", "מ", "נ", "ס", "ע", "פ", "צ",
+# Iterate through all the paragraphs in the docx
+        hebrew_alphabet = ["א׳", "ב", "ג", "ד", "ה", "ו", "ז", "ח", "ט", "י", "כ", "ל", "מ", "נ", "ס", "ע", "פ", "צ",
                            "ק", "ר", "ש", "ת"]
 
-        nep = ""
+        photo_path = [''] * num_messages
+#insert the photos and text for attachments
         for i in range(num_messages):
-            input = ("נספח " + hebrew_alphabet[i] + "׳:"
+            input = ("נספח " + hebrew_alphabet[i]+
                                                     "\n")
             new_para = document.add_paragraph(input)
             photo_path[i] = settings.MEDIA_ROOT + ('/temp' + f'{i}' + '.png')
             new_para.add_run().add_picture(photo_path[i], width=Inches(2.5))
 
 
-
-        # for para in document.paragraphs:
-        #     if "pic" in para.text:
-        #         para.text = para.text.replace('pic', nep)
-
-        # for i in range(num_messages):
-        #     for para in document.paragraphs:
-        #         if ('pic '+f'{i}') in para.text:
-        #             input = ("נספח " + hebrew_alphabet[i] + ":׳\n")
-        #             photo_path[i] = settings.MEDIA_ROOT + ('/temp' + f'{i}' + '.png')
-        #             para.text = para.text.replace('pic '+f'{i}', input)
-        #             para.add_run().add_picture(photo_path[i], width=Inches(2.5))
-
+#changes the font
         for paragraph in document.paragraphs:
-            # Iterate over the runs in the paragraph
             for run in paragraph.runs:
                 # Set the font to Arial
                 run.font.name = "Arial"
         document.save('static/docx/modified_document.docx')
-        filepath = 'static/docx/modified_document.docx'
-        print(f'file_path: {filepath}')
+        # convert to PDF
+        if (request.POST['output_file'] =='PDF'):
+            convert('static/docx/modified_document.docx', 'static/docx/modified_document.pdf')
 
-        # replace_pic_with_image(filepath)
 
-        # document.save('static/docx/modified_document.docx')
-        # filepath = 'static/docx/modified_document.docx'
-        # photo = os.path.join(settings.MEDIA_ROOT, 'upload_folder', 'tempphoto.png')
-        # img = Image.open(photo)
-        #
-        # replace_pic(filepath, photo)
+
+
 
         download_success = True
 

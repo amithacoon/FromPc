@@ -59,7 +59,7 @@ function updateMessagePhotos() {
             '<div>' +
             '<label for="message_' + i + '_photo" ">Photo number ' + (i + 1) + ':</label>'
             + '<input type="file" name="photo_' + i + ' " id="photo_' + i + '" >'
-            + '<button type="button" id="upload-button_' + i + '"  name="photo_' + i + '_upload" style="width: 23%; margin-bottom: 10px; padding: 12px; background-color: #4caf50; color: white; font-weight: bold; border: none; border-radius: 4px; cursor: pointer;">'
+            + '<button type="button" id="upload-button_' + i + '"  name="photo_' + i + '_upload" >'
             + '</div>'
         );
 
@@ -163,8 +163,14 @@ fetch('/upload/', {
     </div>
 
 
-
-
+<label style="font-weight: bold;"> File format:</label>
+    <div>
+      <input type="radio" name="output_file" id="output_file_PDF" value="PDF" style="margin-right: 10px;" required>
+      <label for="output_file_PDF">PDF</label>
+      <input type="radio" name="output_file" id="output_file_Docx" value="Docx" style="margin-left: 20px; margin-right: 10px;" required>
+      <label for="output_file_Docx">Docx</label>
+    </div>
+<br>
        <button type="submit" style="width: 100%; margin-bottom: 10px; padding: 12px; background-color: #4caf50; color: white; font-weight: bold; border: none; border-radius: 4px; cursor: pointer;">Submit</button>
 
   </form>
