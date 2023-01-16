@@ -1,11 +1,8 @@
-import os
-from io import BytesIO
+
+from django.utils.dateparse import parse_date
+from datetime import datetime
 from django.http import HttpResponse
-from django.core.files.storage import default_storage
-from django.core.files.base import ContentFile
-from django.contrib import messages
-from django.views.decorators.csrf import csrf_exempt
-from django.http import HttpResponseRedirect
+
 import os
 from django.conf import settings
 from django.http import JsonResponse
@@ -15,8 +12,6 @@ from django.shortcuts import render, redirect
 from docx.shared import Inches
 from docx2pdf import convert
 
-from PIL import Image
-from docx import Document
 
 from djangoProject import settings
 
@@ -31,55 +26,7 @@ def letter(request):
     return render(request, 'letter.html')
 
 
-#
-# def upload_photo(request):
-#     if request.method == 'POST':
-#         photo = request.FILES.get('photo')
-#         if photo:
-#             # check that it's a valid image file
-#             if not photo.content_type.startswith('image'):
-#                 messages.success(request, 'Thats Not a Photo!')
-#             else:
-#                 # store the file in your static folder
-#                 with open('media/upload_folder/' + 'tempphoto.png', 'wb+') as destination:
-#                     for chunk in photo.chunks():
-#                         destination.write(chunk)
-#                 messages.success(request, 'File uploaded !')
-#
-#         else:
-#             messages.success(request, 'No file was selected')
-#     return render(request, 'letter.html')
 
-
-# def replace_pic(filepath, photo):
-#     document = Document(filepath)
-#     for paragraph in document.paragraphs:
-#         if 'pic' in paragraph.text:
-#             # insert the photo
-#             # Save the PIL Image object to a BytesIO object
-#             with Image.open(photo) as img:
-#                 buffer = BytesIO(photo)
-#                 img.save(buffer, 'PNG')
-#             # Add the image to the document
-#             document.add_picture(buffer, width=photo.width, height=photo.height)
-#             buffer.seek(0)
-#             # Replace 'pic' with image
-#             paragraph.text = paragraph.text.replace('pic', '')
-#     document.save('static/docx/modified_document1.docx')
-#
-
-# def file_upload(request):
-#     if request.method == 'POST':
-#         file = request.FILES.get('file')
-#         print(f'Uploaded file: {file.name}')  # Print the name of the uploaded file
-#         file_name = "temp.png"
-#         file_path = os.path.join(settings.MEDIA_ROOT, file_name)
-#         print(f'File path: {file_path}')  # Print the file path
-#         with open(file_path, 'wb+') as destination:
-#             for chunk in file.chunks():
-#                 destination.write(chunk)
-#         print("File saved successfully!")  # Print success message
-#         return JsonResponse({'status': 'success'})
 current_upload = 0
 
 
@@ -126,8 +73,8 @@ def letter(request):
 
         if request.POST['unsubscribed_button'] == 'false':
             could_you_unsubscribe = "אם לא די בכך, הרי שהמסרון ממילא לא עומד בדרישות החוק הצורניות בכך שאין בו אפשרות הסרה כדין"
-            # else:
-            could_you_unsubscribe = " "
+        else:
+                 could_you_unsubscribe = " "
 
             # Get the number of messages
 
@@ -136,8 +83,8 @@ def letter(request):
         date_of_message = [''] * num_messages
         time_of_message = [''] * num_messages
         for i in range(num_messages):
-            date_of_message[i] = request.POST['message_{}_date'.format(i)]
-            time_of_message[i] = request.POST['message_{}_time'.format(i)]
+            date_of_message[i] = parse_date(request.POST['message_{}_date'.format(i)]).strftime("%d/%m/%Y")
+            time_of_message[i] = (request.POST['message_{}_time'.format(i)])
             dates_and_times.append((date_of_message[i], time_of_message[i]))
         date_of_message = ""
         time_of_message = ""
