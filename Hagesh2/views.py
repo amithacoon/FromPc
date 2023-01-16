@@ -140,6 +140,8 @@ def letter(request):
 
 
 #changes the font
+
+
         for paragraph in document.paragraphs:
             for run in paragraph.runs:
                 # Set the font to Arial
