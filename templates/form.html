@@ -47,6 +47,7 @@
         <form action="{% url 'download_file' %}" method="post">
             {% csrf_token %}
             <button type="submit">Download file</button>
+            <input type="hidden" value="{{ type }}" name="type">
         </form>
     {% else %}
         <!-- Error message -->

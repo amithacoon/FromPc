@@ -1,0 +1,123 @@
+
+<html>
+  <head>
+   <style>
+      .container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+      }
+
+      #signature-pad {
+        width: 400px;
+        height: 200px;
+        border: 1px solid black;
+        background-color: #eee;
+        border-radius: 10px;
+      }
+
+      #controls {
+        text-align: center;
+        padding-top: 10px;
+      }
+
+      button {
+        background-color: #4CAF50;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        cursor: pointer;
+        margin: 10px;
+        border-radius: 5px;
+        font-weight: bold;
+        transition: background-color 0.2s ease-in-out;
+      }
+
+      button:hover {
+        background-color: #3e8e41;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="signature-pad"></canvas>
+    <div id="controls">
+      <button id="save-signature">Save Signature</button>
+      <button id="clear-pad">Clear Pad</button>
+    </div>
+    <script>
+
+      const canvas = document.getElementById("signature-pad");
+      const context = canvas.getContext("2d");
+let isDrawing = false;
+
+      canvas.addEventListener("mousedown", startDrawing);
+      canvas.addEventListener("mouseup", stopDrawing);
+      canvas.addEventListener("mousemove", draw);
+
+      function startDrawing(event) {
+        isDrawing = true;
+        context.beginPath();
+        context.moveTo(event.clientX, event.clientY);
+      }
+
+      function stopDrawing() {
+        isDrawing = false;
+      }
+
+
+      function draw(event) {
+        if (isDrawing) {
+          context.lineTo(event.clientX, event.clientY);
+          context.lineWidth = 4;
+          context.lineCap = "round";
+          context.lineJoin = "round";
+          context.stroke();
+          context.quadraticCurveTo(
+      (event.clientX + lastX) / 2,
+      (event.clientY + lastY) / 2,
+      event.clientX,
+      event.clientY
+    );
+    context.stroke();
+    lastX = event.clientX;
+    lastY = event.clientY;
+  }
+      }
+
+
+      const saveSignatureBtn = document.getElementById("save-signature");
+      saveSignatureBtn.addEventListener("click", () => {
+        if (isSignatureValid()) {
+          const dataURL = canvas.toDataURL();
+          download(dataURL, "signature.png");
+        } else {
+          alert("Signature is empty or too small. Please draw a signature with a minimum size of 20x20 pixels.");
+        }
+      });
+
+      const clearPadBtn = document.getElementById("clear-pad");
+      clearPadBtn.addEventListener("click", () => {
+        context.clearRect(0, 0, canvas.width, canvas.height);
+      });
+
+      function download(dataURL, fileName) {
+        const link = document.createElement("a");
+        link.download = fileName;
+        link.href = dataURL;
+        link.click();
+      }
+
+    function isSignatureValid() {
+        const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+        let nonEmptyPixels = 0;
+        for (let i = 0; i < imageData.data.length; i += 4) {
+          if (imageData.data[i + 3] !== 0) {
+            nonEmptyPixels++;
+          }
+        }
+        return nonEmptyPixels >= 20 * 20;
+      }
+    </script>
+  </body>
+</html>

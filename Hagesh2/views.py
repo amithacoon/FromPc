@@ -1,4 +1,3 @@
-
 from django.utils.dateparse import parse_date
 from datetime import datetime
 from django.http import HttpResponse
@@ -11,9 +10,9 @@ import docx
 from django.shortcuts import render, redirect
 from docx.shared import Inches
 from docx2pdf import convert
-
-
 from djangoProject import settings
+
+import pdfkit
 
 
 def index(request):
@@ -24,6 +23,24 @@ def letter(request):
     if request.method == 'POST':
         print(request.POST)
     return render(request, 'letter.html')
+
+def lawsuit(request):
+    return render(request, 'lawsuits.html')
+
+def why(request):
+    return render(request, 'why.html')
+
+
+LIBRE_OFFICE = r"/usr/bin/soffice"
+
+def convert_to_pdf(input_docx, out_folder):
+    p = Popen([LIBRE_OFFICE, '--headless', '--convert-to', 'pdf', '--outdir',
+               out_folder, input_docx])
+    print([LIBRE_OFFICE, '--convert-to', 'pdf', input_docx])
+    p.communicate()
+
+
+
 
 
 
@@ -74,9 +91,9 @@ def letter(request):
         if request.POST['unsubscribed_button'] == 'false':
             could_you_unsubscribe = "אם לא די בכך, הרי שהמסרון ממילא לא עומד בדרישות החוק הצורניות בכך שאין בו אפשרות הסרה כדין"
         else:
-                 could_you_unsubscribe = " "
+            could_you_unsubscribe = " "
 
-            # Get the number of messages
+        # Get the number of message
 
         num_messages = int(request.POST['num_messages'])
         dates_and_times = []
@@ -112,35 +129,37 @@ def letter(request):
 
         }
 
-# Filename of the template
+        # Filename of the template
         template_filename = 'static/docx/template.docx'
 
-# Open the temp file
+        # Open the temp file
         document = docx.Document(template_filename)
         document.core_properties.encoding = 'UTF-8'
 
-# Replace keywords in the contents
+        # Replace keywords in the contents
         for paragraph in document.paragraphs:
             for run in paragraph.runs:
                 for key, value in keywords.items():
                     run.text = run.text.replace(key, value)
 
-# Iterate through all the paragraphs in the docx
+        # Iterate through all the paragraphs in the docx
         hebrew_alphabet = ["א׳", "ב", "ג", "ד", "ה", "ו", "ז", "ח", "ט", "י", "כ", "ל", "מ", "נ", "ס", "ע", "פ", "צ",
                            "ק", "ר", "ש", "ת"]
 
-        photo_path = [''] * num_messages
-#insert the photos and text for attachments
-        for i in range(num_messages):
-            input = ("נספח " + hebrew_alphabet[i]+
-                                                    "\n")
-            new_para = document.add_paragraph(input)
-            photo_path[i] = settings.MEDIA_ROOT + ('/temp' + f'{i}' + '.png')
-            new_para.add_run().add_picture(photo_path[i], width=Inches(2.5))
+        try:
+            photo_path = [''] * num_messages
+            # insert the photos and text for attachments
+            for i in range(num_messages):
+                input = ("נספח " + hebrew_alphabet[i] +
+                         "\n")
+                new_para = document.add_paragraph(input)
+                photo_path[i] = settings.MEDIA_ROOT + ('/temp' + f'{i}' + '.png')
+                new_para.add_run().add_picture(photo_path[i], width=Inches(2.5))
+        except FileNotFoundError:
+            return render(request, 'letter.html', {'error': 'Please attach a file before submitting the form'})
 
 
-#changes the font
-
+        # changes the font
 
         for paragraph in document.paragraphs:
             for run in paragraph.runs:
@@ -148,18 +167,32 @@ def letter(request):
                 run.font.name = "Arial"
         document.save('static/docx/modified_document.docx')
         # convert to PDF
-        if (request.POST['output_file'] =='PDF'):
-            convert('static/docx/modified_document.docx', 'static/docx/modified_document.pdf')
+        filetype = str(request.POST['output_file'])
 
+        if (filetype == 'PDF'):
+            # sample_doc = 'static/docx/modified_document.docx'
+            # out_folder = 'static/docx'
+            # convert_to_pdf(sample_doc, out_folder)
+            doc = ("static/docx/modified_document.docx")
+            savedoc = ("static/docx/modified_document.pdf")
+            convert(doc,savedoc)
 
+        folder = 'media'
 
+        for filename in os.listdir(folder):
+            if filename.startswith("temp") and filename.endswith(".png"):
+                file_path = os.path.join(folder, filename)
+                try:
+                    os.unlink(file_path)
+                except Exception as e:
+                    print("Failed to delete file: ", e)
 
 
         download_success = True
 
         # document.save('static/docx/modified_document.docx')
 
-        return render(request, 'form.html', {'download_success': download_success})
+        return render(request, 'form.html', {'download_success': download_success, 'type': filetype})
 
         print("Finished replacing keywords in temp file.")
     else:
@@ -171,7 +204,7 @@ def letter(request):
 
 
 def home(request):
-    return render(request, 'home.html')
+    return render(request, 'Home.html')
 
 
 def form(request):
@@ -181,24 +214,41 @@ def form(request):
     # Render the form template
     return render(request, 'form.html', {'download_success': download_success})
 
+def importError(request):
+
+    return render(request, 'importError.html')
+
 
 def download_file(request):
     if request.method == 'POST':
+        if request.POST['type'] == 'PDF':
+            file_path = 'static/docx/modified_document.pdf'
+            filename = "Letter.pdf"
+            content_type = 'application/pdf'
+        if request.POST['type'] == 'lawsuit':
+            file_path = 'static/docx/destination.docx'
+            filename = "lawsuit.docx"
+            content_type = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+
+        else:
+            file_path = 'static/docx/modified_document.docx'
+            filename = "Letter.docx"
+
+            content_type = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+
         # Process form submission
-
-        # File path
-        file_path = 'static/docx/modified_document.docx'
-
         # Open the file in binary mode
         with open(file_path, 'rb') as f:
             # Read the file content
             file_content = f.read()
 
+        print(file_path)
         # Create the HttpResponse object with the file content
+
         response = HttpResponse(file_content,
-                                content_type='application/vnd.openxmlformats-officedocument.wordprocessingml.document')
+                                content_type=content_type)
         # Set the Content-Disposition header to attachment
-        response['Content-Disposition'] = 'attachment; filename="modified_document.docx"'
+        response['Content-Disposition'] = f'attachment; {filename}'
 
         # Set the download_success flag to True
         download_success = True

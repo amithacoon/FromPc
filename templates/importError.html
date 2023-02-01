@@ -1,0 +1,16 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Error</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css'%}">
+
+
+<body>
+    <div class="popup">
+            <p style="color:red">No attachment was uploaded.</p>
+        <h2 href="{% url 'letter' %}">Go back to the Letter page and try again</h2>
+    </div>
+</body>
+</html>

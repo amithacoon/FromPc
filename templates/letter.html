@@ -173,8 +173,15 @@ fetch('/upload/', {
 <br>
        <button type="submit" style="width: 100%; margin-bottom: 10px; padding: 12px; background-color: #4caf50; color: white; font-weight: bold; border: none; border-radius: 4px; cursor: pointer;">Submit</button>
 
-  </form>
+  <div style="text-align:center;">
 
+ {% if error %}
+        <p style="color:red; font-size:20px;">Error: {{ error }}</p>
+ {% endif %}
+</div>
+
+
+  </form>
 
 
 {% if letter %}
