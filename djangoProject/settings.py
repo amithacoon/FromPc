@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     'Hagesh2',
+    'google_translate'
 
 ]
 
@@ -65,8 +66,11 @@ TEMPLATES = [
                 "django.contrib.messages.context_processors.messages",
                 'django.template.context_processors.csrf',
             ],
+            # 'builtins':[
+            #     'google_translate.templatetags.google_translate',
+            # ]
         },
-    },
+    }
 ]
 
 WSGI_APPLICATION = "djangoProject.wsgi.application"

@@ -1,3 +1,4 @@
+{% load google_translate %}
 <!DOCTYPE html>
 <html>
 <head>
@@ -13,29 +14,62 @@
         font-size: 16px;
         line-height: 1.5;
         margin: 10px 0;
-        text-align: left;
     }
     h1 {
         font-size: 36px;
-        text-align: left;
         margin: 30px 0;
     }
     h2 {
         font-size: 30px;
-        text-align: left;
         margin: 20px 0;
     }
     ul {
-        text-align: left;
         margin: 20px 0;
     }
     li {
         font-size: 16px;
     }
   </style>
+
 </head>
 <body>
-   <h1>Why Use Our Service</h1>
+
+<script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
+    <script>
+        function googleTranslateElementInit() {
+          new google.translate.TranslateElement({pageLanguage: 'en', includedLanguages: 'ar,en,iw', layout: google.translate.TranslateElement.InlineLayout.SIMPLE, multilanguagePage: true, autoDisplay: false }, 'google_translate_element');
+            $('.goog-te-menu-value').on('DOMSubtreeModified', 'span', function(){
+                   language = $(".goog-te-menu-value span").html();
+
+                    if (language === "Arabic" || language === "Hebrew") {
+                        $('#theContent').css('direction', 'rtl');
+                            $('h1').css('direction', 'rtl');
+                    $('h2').css('direction', 'rtl');
+                                        $('p').css('direction', 'rtl');
+                                                                                $('li').css('direction', 'rtl');
+
+
+
+
+                    }
+
+                    else{
+                        $('#theContent').css('direction', 'ltr');
+                                  $('h1').css('direction', 'ltr');
+                    $('h2').css('direction', 'ltr');
+                                        $('p').css('direction', 'ltr');
+                                                                                $('li').css('direction', 'ltr');
+
+
+                    };
+                });
+        };
+    </script>
+    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+<div id="theContent">
+        <div id="google_translate_element" >
+    <h1>Why Use Our Service</h1>
   <p>Our service helps you to generate alert letters for various purposes, including alert letters against unwelcome spam according to Israeli law. We make sure that your letters are compliant with the law and protect you from unwanted messages, and also you can benefit up to 1000 NIS in court if you received unwanted spam text or email as it consumes your time and disturbing.</p>
   <h2>What is Unwanted Spam?</h2>
   <p>Unwanted spam is when someone sends you a message, like a text or an email, to advertise something without you asking for it.</p>
@@ -48,5 +82,7 @@
     <li>Getting a message on your phone from someone you don't know trying to sell you something.</li>
   </ul>
   <p>Our service ensures that you will never have to deal with unwanted spam again. Start generating your alert letters now!</p>
+    </div>
+    </div>
 </body>
 </html>

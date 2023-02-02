@@ -134,7 +134,7 @@ def insert_infoBuilder(request):
                'טיפיש': num_messages,
                'ffff': num_messages,
                # 'hourofmessage': hourofmessagesmessage,
-               # 'dateofmessage': messages,
+               'dateofmessage': messages,
                'whatdidyoudo': whatdidyoudo,
                'companyrespnse': companyresponse,
                }

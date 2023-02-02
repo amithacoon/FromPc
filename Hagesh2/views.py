@@ -11,7 +11,7 @@ from django.shortcuts import render, redirect
 from docx.shared import Inches
 from docx2pdf import convert
 from djangoProject import settings
-
+import google_translate
 import pdfkit
 
 

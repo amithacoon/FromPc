@@ -1,3 +1,5 @@
+
+
 <html>
   <head>
 
@@ -17,22 +19,42 @@
         text-align: right;
         padding-right: 10px;
       }
-      input[type="text"], input[type="number"], textarea {
-        width: 200px;
+      input[type="text"], input[type="number"] {
+        width: 250px;
         height: 30px;
         border-radius: 5px;
         border: 1px solid gray;
         margin-bottom: 20px;
       }
+
+      textarea{
+          width: 300px;
+        height: 80px;
+        border-radius: 5px;
+        border: 1px solid gray;
+        margin-bottom: 20px;
+
+      }
       input[type="radio"] {
         margin-right: 10px;
       }
+
+      select {
+   width:178px !important;
+   height:27px !important;
+   margin-top:6px !important;
+   direction:rtl !important;
+   text-align:right !important;
+   margin: 0 auto;
+   float: right;
+}
+
     </style>
 
-
+{% load google_translate %}
 
   </head>
-  <body>
+<body class="{% if language == 'he' %}rtl{% endif %}">
 
 
 <script style="margin-bottom: 10px;">
@@ -63,10 +85,56 @@
       );
     }
   }
+
 </script>
 
-    <form action="{% url 'insert_info' %}" method="post" style="width: 500px; margin: 0 auto; background-color: #f5f5f5; padding: 20px;">
+ <title>HTML If Statement Example</title>
+
+
+
+    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Google Translation</title>
+    <script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
+    <script>
+        function googleTranslateElementInit() {
+          new google.translate.TranslateElement({pageLanguage: 'en', includedLanguages: 'ar,en,iw', layout: google.translate.TranslateElement.InlineLayout.SIMPLE, multilanguagePage: true, autoDisplay: false }, 'google_translate_element');
+            $('.goog-te-menu-value').on('DOMSubtreeModified', 'span', function(){
+                   language = $(".goog-te-menu-value span").html();
+
+                    if (language === "Arabic" || language === "Hebrew") {
+                        $('#theContent').css('direction', 'rtl');
+                        $('form').css('direction', 'rtl');
+
+                    }
+
+                    else{
+                        $('#theContent').css('direction', 'ltr');
+                        $('form').css('direction', 'ltr');
+
+
+                    };
+                });
+        };
+    </script>
+    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</head>
+<body>
+    <div id="theContent">
+        <div id="google_translate_element" ></div>
+    </div>
+
+    <form action="{% url 'insert_info' %}" method="post" style="width: 600px; margin: 0 auto; background-color: #f5f5f5; padding: 20px;" >
       {% csrf_token %}
+
+     <h2> Personal information about you:</h2>
+<br>
+
       <p>
         <label for="full_name">Full Name:</label>
         <input type="text" name="full_name" id="full_name" required>
@@ -83,6 +151,8 @@
         <label for="userphone">User Phone:</label>
         <input type="text" name="userphone" id="userphone" required>
       </p>
+    <h2>  information about the Company:</h2>
+<br>
         <p>
         <label for="companyname">Company Name:</label>
         <input type="text" name="companyname" id="companyname" required>
@@ -109,6 +179,8 @@
 <p style="color: blue;">(for example Fast food)</p>
         <br>
       </p>
+        <h2> Personal information about the Company CEO:</h2>
+<br>
       <p>
         <label for="netba">CEO Name:</label>
         <input type="text" name="netba" id="netba" required>
@@ -125,9 +197,43 @@
         <label for="netbaphone">CEO Phone:</label>
         <input type="text" name="netbaphone" id="netbaphone" required>
       </p>
-          <label for="city">City to submit:</label>
-        <input type="text" name="city" id="city" required>
-    <p style="color: blue;">(in what city is the court you plan to sue)</p>
+        <h2>  Information about the case:</h2>
+<br>
+
+<select name="city" align="center"  dir="rtl"  style="float:right>
+     <option value="אשקלון">בית משפט השלום אשקלון</option>
+      <option value="אשדוד">בית משפט השלום אשדוד</option>
+      <option value="קרית-גת">בית משפט השלום קרית-גת</option>
+      <option value="דימונה">בית משפט השלום דימונה</option>
+      <option value="אילת">בית משפט השלום אילת</option>
+      <option value="ירושלים">בתי משפט מחוז ירושלים</option>
+      <option value="ירושלים">בית המשפט השלום ירושלים</option>
+      <option value="בית-שמש">בית המשפט השלום בית-שמש</option>
+      <option value="כפר-סבא">בית משפט השלום כפר-סבא</option>
+      <option value="ראשון לציון">בית משפט השלום ראשון לציון</option>
+      <option value="פתח-תקוה">בית משפט השלום פתח-תקוה</option>
+      <option value="רמלה">בית משפט השלום רמלה</option>
+      <option value="רחובות">בית משפט השלום רחובות</option>
+      <option value="נתניה">בית משפט השלום נתניה</option>
+    <option value="הרצליה">בית משפט השלום הרצליה</option>
+    <option value="מחוז חיפה">בתי משפט מחוז חיפה</option>
+    <option value="קריות">בית משפט השלום קריות</option>
+    <option value="חיפה">בית משפט השלום חיפה</option>
+    <option value="עכו">בית משפט השלום עכו</option>
+    <option value="חדרה">בית משפט השלום חדרה</option>
+    <option value="נהריה">בית משפט השלום נהריה</option>
+    <option value="מחוז נצרת">בתי משפט מחוז נצרת</option>
+    <option value="נצרת">בית משפט השלום נצרת</option>
+    <option value="טבריה">בית משפט השלום טבריה</option>
+    <option value="בית-שאן">בית משפט השלום בית-שאן</option>
+    <option value="צפת">בית משפט השלום צפת</option>
+    <option value="עפולה">בית משפט השלום עפולה</option>
+    <option value="קרית-שמונה">בית משפט השלום קרית-שמונה</option>
+    <option value="קצרין">בית משפט השלום קצרין</option>
+    <option value="מסעד">בית משפט השלום מסעד</option>
+
+</select>
+    <p style="color: blue;">(The court you plan to sue)</p>
 <br>
         <p>
 <label for="num_messages" >Number of spam messages received:</label>
@@ -146,6 +252,8 @@
   <input type="radio" name="unsubscribed" id="no" value="no">No
 </p>
     <br>
+        <h2> what happened so far:</h2>
+<br>
 <p align="center">
   <label for="whatdidyoudo">What did you do?</label>
     <br>
@@ -167,20 +275,15 @@
 
 
 
-
        <button type="submit" style="width: 100%; margin-bottom: 10px; padding: 12px; background-color: #4caf50; color: white; font-weight: bold; border: none; border-radius: 4px; cursor: pointer;">Submit</button>
 </p>
 
+    </div>
 
 
     </form>
 
 
-
-
-
-
-
-
   </body>
 </html>
+
