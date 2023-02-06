@@ -3,16 +3,6 @@
 <head>
 
 
-<script>
-  function googleTranslateElementInit() {
-    new google.translate.TranslateElement({
-      pageLanguage: 'en',
-      includedLanguages: 'ar,en,iw',
-      layout: google.translate.TranslateElement.InlineLayout.HIDE,
-      multilanguagePage: true,
-    }, 'google_translate_element');
-  }
-</script>
 
 
   <title>Hagesh 2.0</title>
@@ -104,6 +94,24 @@
       document.getElementById('iframe').src = url;
     }
   </script>
+
+<script>
+  function googleTranslateElementInit() {
+    new google.translate.TranslateElement({
+      pageLanguage: 'en',
+      includedLanguages: 'ar,en,iw',
+      layout: google.translate.TranslateElement.InlineLayout.HIDE,
+      multilanguagePage: true,
+    }, 'google_translate_element');
+  }
+
+
+  document.querySelector('#google_translate_element').addEventListener('change', function() {
+    const frame = document.querySelector('#iframe');
+    frame.src = frame.src;
+  });
+</script>
+
 <div>
   <p>&copy; All rights reserved for Hagesh2 website owned by Amit Hacoon</p>
   <p>The information provided on this website is for general informational purposes only. The owner of this website, Amit Hacoon, makes no representations or warranties of any kind, express or implied, about the completeness, accuracy, reliability, suitability or availability with respect to the website or the information, products, services, or related graphics contained on the website for any purpose. Any reliance you place on such information is therefore strictly at your own risk.</p>
