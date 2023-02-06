@@ -3,7 +3,9 @@
 <html>
   <head>
 
-
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@600&display=swap" rel="stylesheet">
 
           <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/timepicker.js/latest/timepicker.min.js"></script>
@@ -12,7 +14,17 @@
 
 <link href="https://cdn.jsdelivr.net/timepicker.js/latest/timepicker.min.css" rel="stylesheet"/>
     <title>Insert Info Form</title>
-    <style>
+<style>
+  .translated-rtl * {
+      direction: rtl;
+  }
+
+  .translated-ltr * {
+    direction: ltr;
+
+  }
+
+
       label {
         display: inline-block;
         width: 150px;
@@ -98,27 +110,10 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Google Translation</title>
-    <script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
     <script>
         function googleTranslateElementInit() {
-          new google.translate.TranslateElement({pageLanguage: 'en', includedLanguages: 'ar,en,iw', layout: google.translate.TranslateElement.InlineLayout.SIMPLE, multilanguagePage: true, autoDisplay: false }, 'google_translate_element');
-            $('.goog-te-menu-value').on('DOMSubtreeModified', 'span', function(){
-                   language = $(".goog-te-menu-value span").html();
+    new google.translate.TranslateElement({pageLanguage: 'en', includedLanguages: 'ar,en,iw', layout: google.translate.TranslateElement.InlineLayout.HIDE, multilanguagePage: true, autoDisplay: false }, 'google_translate_element');
 
-                    if (language === "Arabic" || language === "Hebrew") {
-                        $('#theContent').css('direction', 'rtl');
-                        $('form').css('direction', 'rtl');
-
-                    }
-
-                    else{
-                        $('#theContent').css('direction', 'ltr');
-                        $('form').css('direction', 'ltr');
-
-
-                    };
-                });
         };
     </script>
     <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
@@ -129,7 +124,7 @@
         <div id="google_translate_element" ></div>
     </div>
 
-    <form action="{% url 'insert_info' %}" method="post" style="width: 600px; margin: 0 auto; background-color: #f5f5f5; padding: 20px;" >
+    <form action="{% url 'insert_info' %}" method="post" style="width: 600px; font-family: 'Heebo', sans-serif;  margin: 0 auto; background-color: #f5f5f5; padding: 20px;" >
       {% csrf_token %}
 
      <h2> Personal information about you:</h2>
@@ -201,7 +196,8 @@
 <br>
 
 <select name="city" align="center"  dir="rtl"  style="float:right>
-     <option value="אשקלון">בית משפט השלום אשקלון</option>
+     <option value=">
+      <option value="אשקלון">בית משפט השלום אשקלון</option>
       <option value="אשדוד">בית משפט השלום אשדוד</option>
       <option value="קרית-גת">בית משפט השלום קרית-גת</option>
       <option value="דימונה">בית משפט השלום דימונה</option>
@@ -233,6 +229,8 @@
     <option value="מסעד">בית משפט השלום מסעד</option>
 
 </select>
+    <br>
+    <br>
     <p style="color: blue;">(The court you plan to sue)</p>
 <br>
         <p>
@@ -247,7 +245,7 @@
         </div>
       {% endfor %}
     </div>
-  <label for="unsubscribed">Unsubscribed:</label>
+  <label for="unsubscribed">Did you have the option to remove yourself from the mailing list with an "unsubscribe" button?</label>
   <input type="radio" name="unsubscribed" id="yes" value="yes">Yes
   <input type="radio" name="unsubscribed" id="no" value="no">No
 </p>

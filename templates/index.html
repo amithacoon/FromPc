@@ -1,9 +1,31 @@
 <!doctype html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="utf-8">
+
+
+<script>
+  function googleTranslateElementInit() {
+    new google.translate.TranslateElement({
+      pageLanguage: 'en',
+      includedLanguages: 'ar,en,iw',
+      layout: google.translate.TranslateElement.InlineLayout.HIDE,
+      multilanguagePage: true,
+    }, 'google_translate_element');
+  }
+</script>
+
+
   <title>Hagesh 2.0</title>
   <style>
+  .translated-rtl * {
+      direction: rtl;
+  }
+
+  .translated-ltr * {
+    direction: ltr;
+
+  }
+
     /* Add a moving background of dots */
     body {
             background-color: #fcf1df;
@@ -70,6 +92,8 @@
     <a href="#letter" onclick="changeIframe({% url 'letter' %})">New Letter</a>
     <a href="#lawsuit" onclick="changeIframe({% url 'lawsuit' %})">New Lawsuit (SOON)</a>
   </div>
+  <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+<div id="google_translate_element"></div>
   <!-- Iframe -->
   <div class="iframe-container">
     <iframe src="{% url 'home' %}" id="iframe"></iframe>

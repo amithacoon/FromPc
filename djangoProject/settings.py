@@ -36,8 +36,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     'Hagesh2',
-    'google_translate'
-
+    'google_translate',
 ]
 
 MIDDLEWARE = [
@@ -66,9 +65,9 @@ TEMPLATES = [
                 "django.contrib.messages.context_processors.messages",
                 'django.template.context_processors.csrf',
             ],
-            # 'builtins':[
-            #     'google_translate.templatetags.google_translate',
-            # ]
+            'builtins':[
+                'google_translate.templatetags.google_translate',
+            ]
         },
     }
 ]
@@ -129,3 +128,4 @@ MEDIA_URL = '/media/'
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
