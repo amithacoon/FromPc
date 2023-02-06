@@ -1,0 +1,42 @@
+<html>
+<head>
+    <title>Google Translation</title>
+    <script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
+    <script>
+        function googleTranslateElementInit() {
+          new google.translate.TranslateElement({pageLanguage: 'en', includedLanguages: 'ar,en', layout: google.translate.TranslateElement.InlineLayout.SIMPLE, multilanguagePage: true, autoDisplay: false }, 'google_translate_element');
+            $('.goog-te-menu-value').on('DOMSubtreeModified', 'span', function(){
+                   language = $(".goog-te-menu-value span").html();
+
+                    if (language == "Arabic"){
+                        $('h1').css('direction', 'rtl');
+                    }
+                    else{
+                        $('#theContent').css('direction', 'ltr');
+                    };
+                });
+        };
+    </script>
+    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+</head>
+<style>
+  #theContent h1 {
+    color: #333;
+    font-size: 36px;
+    font-weight: bold;
+  }
+  .translated-rtl #theContent h1 {
+      direction: rtl;
+  }
+  .translated-ltr #theContent h1 {
+    direction: ltr;
+  }
+</style>
+<body>
+
+    <div id="theContent">
+        <div id="google_translate_element" ></div>
+        <h1> Site Is  Down ,Under Development Reach you soon</h1>
+    </div>
+</body>
+</html>
