@@ -1,36 +1,92 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
     <title>Home</title>
-    <style>
-        /* Add some styling to make the page look better */
-        body {
-            background-color: #fcf1df;
-            color: #2d2a71; /* Change text color */
-            font-family: Arial, sans-serif;
-        }
-        p {
-            font-size: 16px;
-            line-height: 1.5;
-            margin: 10px 0;
-            text-align: center;
-        }
-        img {
-            display: block;
-            {#margin: 0 auto;#}
-            max-width: 50%; /* Make the image 50% smaller */
-        }
-    </style>
-</head>
-<body>
-    <!-- Logo -->
+
+
+<script>
+  function googleTranslateElementInit() {
+    new google.translate.TranslateElement({
+      pageLanguage: 'en',
+      includedLanguages: 'ar,en,iw',
+      layout: google.translate.TranslateElement.InlineLayout.HIDE,
+      multilanguagePage: true,
+    }, 'google_translate_element');
+  }
+</script>
+
+    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+    <div id="google_translate_element"></div>
+
+
+
+<style>
+  /* Add some styling to make the page look better */
+body{
+
+    background-color: #fcf1df;
+    color: #2d2a71; /* Change text color */
+    font-family: Arial, sans-serif;
+  }
+  p {
+    font-size: 16px;
+    line-height: 1.5;
+    margin: 10px 0;
+    text-align: center;
+  }
+  img {
+    display: block;
+    max-width: 56%; /* Make the image 50% smaller */
+  }
+.translated-rtl * {
+  direction: rtl !important;
+}
+.translated-ltr * {
+  direction: ltr !important;
+}
+
+.logo-ltr {
+  display: block;
+}
+
+.logo-rtl {
+  display: none;
+}
+
+.translated-ltr .logo-ltr {
+  display: block;
+}
+
+.translated-ltr .logo-rtl {
+  display: none;
+}
+
+.translated-rtl .logo-ltr {
+  display: none;
+}
+
+.translated-rtl .logo-rtl {
+  display: block;
+}
+
+
+</style>
+
+
+<body class="translated-ltr">
+
 <center>
-  <img src="{% static 'hageshlogo.png' %}" alt="Logo">
+    <img src="{% static 'logo-English.jpg' %}" alt="LTR Logo" class="logo logo-ltr" >
+
+  <!-- hebrew Logo -->
+  <img src="{% static 'logo-Hebrew.jpg' %}" alt="RTL Logo" class="logo logo-rtl" >
+
+
 </center>
 
-    <!-- Paragraph -->
+
+
+  <!-- Toggle Direction Button -->
     <p>Welcome to our website! We offer a convenient way to generate alert letters for various purposes. Whether you need a legal notice or a warning letter, we have got you covered. Our team of professionals will help you create a high-quality document that meets your needs and requirements. So why wait? Start generating your alert letters now!</p>
 </body>
+
 </html>
