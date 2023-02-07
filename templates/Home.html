@@ -52,8 +52,8 @@ direction: ltr}
 }
 
 .translated-ltr .logo-rtl {
-  display: none;
-}
+  {#display: none;#}
+{#}#}
 
 .translated-rtl .logo-ltr {
   display: none;
@@ -61,6 +61,14 @@ direction: ltr}
 
 .translated-rtl .logo-rtl {
   display: block;
+}
+div.container {
+  {#text-align: center;#}
+}
+
+ul.myUL {
+  display: inline-block;
+  {#text-align: left;#}
 }
 
 </style>
@@ -87,13 +95,16 @@ direction: ltr}
   <h3>Welcome to our site!</h3>
   <p>We are dedicated to helping you take control of your inbox and eliminate spam.</p>
     <p>Our software offers an easy way to create:<p>
+<div class="container">
 
-  <ul>
+  <ul class="myUL">
     <li>Notifications and warning letters</li>
     <li>A statement of claim for use in court</li>
   </ul>
   <p>With our platform, you can easily protect yourself from unwanted spam and assert your rights under the Israeli law which prohibits the sending of commercial advertisements without prior consent.</p>
   <p><strong>So why wait? Start using our software to safeguard your inbox and take control of the spam you receive.</strong></p>
+    </div>
+
 </div>
 
 </body>
